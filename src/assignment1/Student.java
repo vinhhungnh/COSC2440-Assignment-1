@@ -13,7 +13,6 @@ public class Student {
     }
 
     public String getId(){
-        System.out.println(this.id);
         return this.id;
     }
 }

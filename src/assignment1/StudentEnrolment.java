@@ -14,11 +14,22 @@ public class StudentEnrolment {
         this.semester = semester;
     }
     public String getStudentID(){
-        return s.getId();
+        return s.id;
+    }
+    public String getStudentName(){
+        return s.name;
+    }
+    public String getStudentBd(){
+        return s.birthday;
     }
     public String getCourseID(){
-        return c.getId();
+        return c.id;
     }
-
+    public String getCourseName(){
+        return c.name;
+    }
+    public int getCourseCredit(){
+        return c.credit;
+    }
 }
 
