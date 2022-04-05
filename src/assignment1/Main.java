@@ -1,7 +1,5 @@
 package assignment1;
 import com.opencsv.CSVWriter;
-
-import javax.annotation.processing.SupportedSourceVersion;
 import java.util.*;
 import java.io.*;
 
@@ -54,7 +52,7 @@ public class Main {
         // Main functions of the program
         String func = "";
         while (!func.equals("0")){
-            String choice = "";
+            String choice;
             // Main menu
             System.out.println("\nPlease select a function: ");
             System.out.println("1. Enroll a student for one Semester\n2. Update an enrolment of a student for one Semester\n3. View all courses of a student in one Semester\n4. View all students of a course in one Semester\n5. View all courses offered in one Semester\n0. Exit the program & Export");
@@ -83,7 +81,7 @@ public class Main {
             }
             // Function 2: Update an enrolment
             if (func.equals("2")){
-                String cid = "";
+                String cid;
                 System.out.println("\nEnter ID of student:");
                 String sid = input.next().toUpperCase();
                 System.out.println("Enter semester:");
@@ -139,7 +137,7 @@ public class Main {
                     }
                 }
             }
-
+            // Function 4: View all students of a course in a semester
             if (func.equals("4")){
                 System.out.println("\nEnter course ID:");
                 String cid = input.next().toUpperCase();
@@ -167,7 +165,7 @@ public class Main {
                     }
                 }
             }
-
+            // Function 5: View all courses offered in a semester
             if(func.equals("5")){
                 Set<String> set = new HashSet<>();
                 System.out.println("\nEnter semester:");
@@ -196,7 +194,7 @@ public class Main {
                 }
             }
         }
-
+        // Export all data to FinalStudentEnrolment.csv file
         String[] header = {"sid","sname","birthday","cid","cname","credit","sem"};
         ArrayList<String> exportList = new ArrayList<>();
         for(StudentEnrolment se: seList.finalList){
