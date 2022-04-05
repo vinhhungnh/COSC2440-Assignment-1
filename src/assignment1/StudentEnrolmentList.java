@@ -30,10 +30,10 @@ public class StudentEnrolmentList implements StudentEnrolmentManager {
         if (action.equals("add")){
             StudentEnrolment se = new StudentEnrolment(s,c,sem);
             finalList.add(se);
-            System.out.println("Course added successfully!");
+            System.out.println("\nCourse added successfully!");
         }else{
             finalList.removeIf(se -> se.getStudentID().equals(s.id) && se.getCourseID().equals(c.id) && se.semester.equals(sem));
-            System.out.println("Course removed successfully!");
+            System.out.println("\nCourse removed successfully!");
         }
     }
 

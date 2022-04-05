@@ -1,11 +1,12 @@
 package assignment1;
+import com.opencsv.CSVWriter;
+
 import javax.annotation.processing.SupportedSourceVersion;
 import java.util.*;
 import java.io.*;
 
 public class Main {
     public static void main(String[] args) {
-	// write your code here
         Map<String, Student> studentMap = new HashMap<>();
         Map<String, Course> courseMap = new HashMap<>();
         StudentEnrolmentList seList = new StudentEnrolmentList();
@@ -55,8 +56,8 @@ public class Main {
         String func = "";
         while (!func.equals("0")){
             String choice = "";
-            System.out.println("Please select a function: ");
-            System.out.println("1. Enroll a student for one Semester\n2. Update an enrolment of a student for one Semester\n3. View all courses of a student in one Semester\n4. View all students of a course in one Semester\n5. View all courses offered in one Semester\n0. Exit the program");
+            System.out.println("\nPlease select a function: ");
+            System.out.println("1. Enroll a student for one Semester\n2. Update an enrolment of a student for one Semester\n3. View all courses of a student in one Semester\n4. View all students of a course in one Semester\n5. View all courses offered in one Semester\n0. Exit the program & Export");
             func = input.next();
             while (!func.equals("0") && !func.equals("1") && !func.equals("2") && !func.equals("3") && !func.equals("4") && !func.equals("5")){
                 System.out.println("Please enter a valid option: ");
@@ -75,20 +76,19 @@ public class Main {
                     Course c = courseMap.get(cid.toUpperCase());
                     StudentEnrolment enrol = new StudentEnrolment(s,c,sem.toUpperCase());
                     seList.add(enrol);
-                    System.out.println("Student " + s.id + " is enrolled successfully in " + c.id + " for semester " + sem+".");
+                    System.out.println("\nStudent " + s.id + " is enrolled successfully in " + c.id + " for semester " + sem+".");
                 }catch(EnrolmentExistedException e){
-                    System.out.println("Student already enrolled with this course!");
+                    System.out.println("\nStudent already enrolled with this course!");
                 }
             }
 
             if (func.equals("2")){
-                String action = "";
                 String cid = "";
-                System.out.println("Enter ID of student:");
-                String sid = input.next();
+                System.out.println("\nEnter ID of student:");
+                String sid = input.next().toUpperCase();
                 System.out.println("Enter semester:");
-                String sem = input.next();
-                System.out.println("Courses of student " + sid + " in semester " + sem + ":");
+                String sem = input.next().toUpperCase();
+                System.out.println("\nCourses of student " + sid + " in semester " + sem + ":\n");
                 Student s = studentMap.get(sid);
                 ArrayList<String> cList = seList.getAll(s);
                 for(String str : cList){
@@ -97,57 +97,130 @@ public class Main {
                         System.out.println(str);
                     }
                 }
-                System.out.println("Select an action:\n1. Add\n2. Delete");
+                System.out.println("\nSelect an action:\n1. Add\n2. Delete");
                 choice = input.next();
                 if(choice.equals("1")){
                     System.out.println("Enter course ID:");
-                    cid = input.next();
+                    cid = input.next().toUpperCase();
                     Course c = courseMap.get(cid);
                     seList.update(s,c,sem,"add");
                 }if(choice.equals("2")){
                     System.out.println("Enter course ID:");
-                    cid = input.next();
+                    cid = input.next().toUpperCase();
                     Course c = courseMap.get(cid);
                     seList.update(s,c,sem,"delete");
                 }
             }
 
             if(func.equals("3")){
-                System.out.println("Enter student ID:");
-                String sid = input.next();
+                System.out.println("\nEnter student ID:");
+                String sid = input.next().toUpperCase();
                 System.out.println("Enter semester:");
-                String sem = input.next();
+                String sem = input.next().toUpperCase();
                 Student s = studentMap.get(sid);
                 ArrayList<String> cList = seList.getAll(s);
-                System.out.println("Enrolled courses of student "+ sid + " in semester " + sem + ":");
-                for(String str : cList){
-                    String[] token = str.split(" - ");
-                    if(token[3].equals(sem)){
-                        System.out.println(str);
+                if(cList.isEmpty()){
+                    System.out.println("\nNo records of student " + sid + " in semester " + sem);
+                }else{
+                    System.out.println("\nEnrolled courses of student "+ sid + " in semester " + sem + ":\n");
+                    for(String str : cList){
+                        String[] token = str.split(" - ");
+                        if(token[3].equals(sem)){
+                            System.out.println(str);
+                        }
+                    }
+                    System.out.println("\nDo you wish to save this record to .csv file?");
+                    System.out.println("1. Yes\n2. No");
+                    choice = input.next();
+                    if (choice.equals("1")){
+                        String[] header = {"id","name","credit","semester"};
+                        String fileName = sid + "-" + sem + ".csv";
+                        export(cList, fileName,header);
                     }
                 }
             }
 
             if (func.equals("4")){
-                System.out.println("Enter course ID:");
-                String cid = input.next();
+                System.out.println("\nEnter course ID:");
+                String cid = input.next().toUpperCase();
                 System.out.println("Enter semester:");
-                String sem = input.next();
+                String sem = input.next().toUpperCase();
                 Course c = courseMap.get(cid);
                 ArrayList<String> sList = seList.getAll(c);
-                System.out.println("Enrolled students of course " + cid + " in semester " + sem + ":");
-                for(String str: sList){
-                    String[] token = str.split(" - ");
-                    if(token[3].equals(sem)){
+                if(sList.isEmpty()){
+                    System.out.println("\nNo records of course " + cid + " in semester " + sem);
+                }else{
+                    System.out.println("\nEnrolled students of course " + cid + " in semester " + sem + ":\n");
+                    for(String str: sList){
+                        String[] token = str.split(" - ");
+                        if(token[3].equals(sem)){
+                            System.out.println(str);
+                        }
+                    }
+                    System.out.println("\nDo you wish to save this record to .csv file?");
+                    System.out.println("1. Yes\n2. No");
+                    choice = input.next();
+                    if (choice.equals("1")){
+                        String[] header = {"id","name","birthday","semester"};
+                        String fileName = cid + "-" + sem + ".csv";
+                        export(sList, fileName,header);
+                    }
+                }
+            }
+
+            if(func.equals("5")){
+                Set<String> set = new HashSet<>();
+                System.out.println("\nEnter semester:");
+                String sem = input.next().toUpperCase();
+                for (StudentEnrolment se: seList.finalList){
+                    if (se.semester.equals(sem)){
+                        set.add(se.getCourseID() + " - " +se.getCourseName() + " - " + se.getCourseCredit()) ;
+                    }
+                }
+                ArrayList<String> offeredCourse = new ArrayList<>(set);
+                if(offeredCourse.isEmpty()){
+                    System.out.println("\nNo courses is offered in semester " + sem);
+                }else{
+                    System.out.println("\nCourses offered in semester " + sem + ":");
+                    for (String str: offeredCourse){
                         System.out.println(str);
+                    }
+                    System.out.println("\nDo you wish to save this record to .csv file?");
+                    System.out.println("1. Yes\n2. No");
+                    choice = input.next();
+                    if (choice.equals("1")){
+                        String[] header = {"id","name","credit"};
+                        String fileName = sem + "-Courses.csv";
+                        export(offeredCourse, fileName,header);
                     }
                 }
             }
         }
-        seList.display();
 
+        String[] header = {"sid","sname","birthday","cid","cname","credit","sem"};
+        ArrayList<String> exportList = new ArrayList<>();
+        for(StudentEnrolment se: seList.finalList){
+            exportList.add(se.getStudentID() + " - " + se.getStudentName() + " - " + se.getStudentBd() + " - " + se.getCourseID() + " - " + se.getCourseName() + " - " + se.getCourseCredit() + " - " + se.semester);
+        }
+        export(exportList, "FinalStudentEnrolment.csv",header);
 
+    }
 
+    public static void export(ArrayList<String> list, String filepath, String[] header){
+        File f = new File(filepath);
+        try{
+            FileWriter output = new FileWriter(f);
+            CSVWriter writer = new CSVWriter(output);
+            writer.writeNext(header);
+            for (String str: list){
+                String[] data = str.split(" - ");
+                writer.writeNext(data);
+            }
+            writer.close();
+            System.out.println("File saved successfully to " + filepath);
+        }catch(IOException e){
+            System.out.println("There was an error! Please try again!");
+        }
     }
 
 }

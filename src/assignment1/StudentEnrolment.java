@@ -1,8 +1,5 @@
 package assignment1;
 
-import java.util.ArrayList;
-import java.util.Set;
-
 public class StudentEnrolment {
     public Student s;
     public Course c;
