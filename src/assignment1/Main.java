@@ -7,17 +7,17 @@ import java.io.*;
 
 public class Main {
     public static void main(String[] args) {
+        // Create Maps for Students and Courses, declare new StudentEnrolmentList object
         Map<String, Student> studentMap = new HashMap<>();
         Map<String, Course> courseMap = new HashMap<>();
         StudentEnrolmentList seList = new StudentEnrolmentList();
-        String file = "default.csv";
-
+        String file = "default.csv"; // default file name
+        // File selection
         System.out.println("Welcome to our Enrolment System");
         System.out.println("Please select a file: ");
         System.out.println("1. Choose my own file\n2. Use default.csv");
         Scanner input = new Scanner(System.in);
         String fileChoice = input.next();
-
         while (!fileChoice.equals("1") && !fileChoice.equals("2")){
             System.out.println("Please select a valid option:");
             System.out.println("1. Choose my own filepath\n2. Use default.csv");
@@ -27,8 +27,7 @@ public class Main {
             System.out.println("Please enter file name or path: ");
             file = input.next();
         }
-
-
+        // Read from .csv file and populate data
         while(file != null){
             try {
                 File f = new File(file);
@@ -37,9 +36,9 @@ public class Main {
                     String line = sc.nextLine();
                     String[] data = line.split(",");
                     Student s = new Student(data[0], data[1], data[2]);
-                    studentMap.put(s.getId(), s);
+                    studentMap.put(s.id, s);
                     Course c = new Course(data[3], data[4], Integer.parseInt(data[5]));
-                    courseMap.put(c.getId(), c);
+                    courseMap.put(c.id, c);
                     StudentEnrolment se = new StudentEnrolment(s, c, data[6]);
                     seList.populate(se);
                 }
@@ -52,10 +51,11 @@ public class Main {
             }
         }
 
-
+        // Main functions of the program
         String func = "";
         while (!func.equals("0")){
             String choice = "";
+            // Main menu
             System.out.println("\nPlease select a function: ");
             System.out.println("1. Enroll a student for one Semester\n2. Update an enrolment of a student for one Semester\n3. View all courses of a student in one Semester\n4. View all students of a course in one Semester\n5. View all courses offered in one Semester\n0. Exit the program & Export");
             func = input.next();
@@ -63,7 +63,7 @@ public class Main {
                 System.out.println("Please enter a valid option: ");
                 func = input.next();
             }
-
+            // Function 1: Add new enrolment
             if (func.equals("1")){
                 System.out.println("Enter ID of student:");
                 String sid = input.next();
@@ -81,7 +81,7 @@ public class Main {
                     System.out.println("\nStudent already enrolled with this course!");
                 }
             }
-
+            // Function 2: Update an enrolment
             if (func.equals("2")){
                 String cid = "";
                 System.out.println("\nEnter ID of student:");
@@ -111,7 +111,7 @@ public class Main {
                     seList.update(s,c,sem,"delete");
                 }
             }
-
+            // Function 3: View all courses of a student in a semester
             if(func.equals("3")){
                 System.out.println("\nEnter student ID:");
                 String sid = input.next().toUpperCase();

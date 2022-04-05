@@ -5,11 +5,6 @@ import java.util.ArrayList;
 public class StudentEnrolmentList implements StudentEnrolmentManager {
     public ArrayList<StudentEnrolment> finalList = new ArrayList<>();
 
-    public void display(){
-        for(StudentEnrolment s: finalList){
-            System.out.println(s.getStudentID() + " " + s.getCourseID() + " " + s.semester);
-        }
-    }
 
     public void populate(StudentEnrolment se){
         finalList.add(se);
@@ -43,8 +38,14 @@ public class StudentEnrolmentList implements StudentEnrolmentManager {
     }
 
     @Override
-    public void getOne(Object o) {
-
+    public boolean getOne(Student s, Course c, String sem) {
+        boolean record = false;
+        for(StudentEnrolment se : finalList){
+            if(se.getStudentID().equals(s.id) && se.getCourseID().equals(c.id) && se.semester.equals(sem)){
+               record = true;
+            }
+        }
+        return record;
     }
 
     @Override
@@ -58,7 +59,7 @@ public class StudentEnrolmentList implements StudentEnrolmentManager {
             }
         }if(o instanceof Course){
             for (StudentEnrolment se: finalList){
-                if(se.getCourseID().equals(((Course) o).getId())){
+                if(se.getCourseID().equals(((Course)o).id)){
                     res.add(se.getStudentID()+ " - " + se.getStudentName() + " - " + se.getStudentBd() + " - " + se.semester);
                 }
             }
@@ -71,7 +72,7 @@ interface StudentEnrolmentManager{
     public void add(StudentEnrolment se) throws EnrolmentExistedException;
     public void update(Student s, Course c, String sem, String action);
     public void delete(String sid, String cid, String sem);
-    public void getOne(Object o);
+    public boolean getOne(Student s, Course c, String sem);
     public ArrayList<String> getAll(Object o);
 
 }

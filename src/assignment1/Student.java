@@ -10,8 +10,4 @@ public class Student {
         this.name = name;
         this.birthday = birthday;
     }
-
-    public String getId(){
-        return this.id;
-    }
 }

@@ -10,8 +10,4 @@ public class Course {
         this.name = name;
         this.credit = credit;
     }
-
-    public String getId(){
-        return this.id;
-    }
 }
