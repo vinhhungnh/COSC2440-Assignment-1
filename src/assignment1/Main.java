@@ -77,6 +77,8 @@ public class Main {
                     System.out.println("\nStudent " + s.id + " is enrolled successfully in " + c.id + " for semester " + sem+".");
                 }catch(EnrolmentExistedException e){
                     System.out.println("\nStudent already enrolled with this course!");
+                }catch(NullPointerException ne){
+                    System.out.println("\nStudent or course can not be found!");
                 }
             }
             // Function 2: Update an enrolment
@@ -86,28 +88,37 @@ public class Main {
                 String sid = input.next().toUpperCase();
                 System.out.println("Enter semester:");
                 String sem = input.next().toUpperCase();
-                System.out.println("\nCourses of student " + sid + " in semester " + sem + ":\n");
+
                 Student s = studentMap.get(sid);
                 ArrayList<String> cList = seList.getAll(s);
+                ArrayList<String> filteredList = new ArrayList<>();
                 for(String str : cList){
                     String[] token = str.split(" - ");
                     if(token[3].equals(sem)){
-                        System.out.println(str);
+                        filteredList.add(str);
+                    }}
+                if(filteredList.isEmpty()){
+                    System.out.println("\nNo records of student " + sid + " in semester " + sem);
+                }else {
+                    System.out.println("\nCourses of student " + sid + " in semester " + sem + ":\n");
+                    for(String strg:filteredList) {
+                        System.out.println(strg);
+                    }
+                    System.out.println("\nSelect an action:\n1. Add\n2. Delete");
+                    choice = input.next();
+                    if(choice.equals("1")){
+                        System.out.println("Enter course ID:");
+                        cid = input.next().toUpperCase();
+                        Course c = courseMap.get(cid);
+                        seList.update(s,c,sem,"add");
+                    }if(choice.equals("2")){
+                        System.out.println("Enter course ID:");
+                        cid = input.next().toUpperCase();
+                        Course c = courseMap.get(cid);
+                        seList.update(s,c,sem,"delete");
                     }
                 }
-                System.out.println("\nSelect an action:\n1. Add\n2. Delete");
-                choice = input.next();
-                if(choice.equals("1")){
-                    System.out.println("Enter course ID:");
-                    cid = input.next().toUpperCase();
-                    Course c = courseMap.get(cid);
-                    seList.update(s,c,sem,"add");
-                }if(choice.equals("2")){
-                    System.out.println("Enter course ID:");
-                    cid = input.next().toUpperCase();
-                    Course c = courseMap.get(cid);
-                    seList.update(s,c,sem,"delete");
-                }
+
             }
             // Function 3: View all courses of a student in a semester
             if(func.equals("3")){
@@ -117,15 +128,17 @@ public class Main {
                 String sem = input.next().toUpperCase();
                 Student s = studentMap.get(sid);
                 ArrayList<String> cList = seList.getAll(s);
-                if(cList.isEmpty()){
+                ArrayList<String> filteredList = new ArrayList<>();
+                for(String str : cList){
+                    String[] token = str.split(" - ");
+                    if(token[3].equals(sem)) {
+                        filteredList.add(str);}}
+                if (filteredList.isEmpty()) {
                     System.out.println("\nNo records of student " + sid + " in semester " + sem);
                 }else{
-                    System.out.println("\nEnrolled courses of student "+ sid + " in semester " + sem + ":\n");
-                    for(String str : cList){
-                        String[] token = str.split(" - ");
-                        if(token[3].equals(sem)){
-                            System.out.println(str);
-                        }
+                    System.out.println("\nEnrolled courses of student " + sid + " in semester " + sem + ":\n");
+                    for(String strg: filteredList){
+                        System.out.println(strg);
                     }
                     System.out.println("\nDo you wish to save this record to .csv file?");
                     System.out.println("1. Yes\n2. No");
@@ -133,7 +146,7 @@ public class Main {
                     if (choice.equals("1")){
                         String[] header = {"id","name","credit","semester"};
                         String fileName = sid + "-" + sem + ".csv";
-                        export(cList, fileName,header);
+                        export(filteredList, fileName,header);
                     }
                 }
             }
@@ -145,15 +158,19 @@ public class Main {
                 String sem = input.next().toUpperCase();
                 Course c = courseMap.get(cid);
                 ArrayList<String> sList = seList.getAll(c);
-                if(sList.isEmpty()){
+                ArrayList<String> filteredList = new ArrayList<>();
+                for(String str: sList){
+                    String[] token = str.split(" - ");
+                    if(token[3].equals(sem)){
+                        filteredList.add(str);
+                    }
+                }
+                if(filteredList.isEmpty()){
                     System.out.println("\nNo records of course " + cid + " in semester " + sem);
                 }else{
                     System.out.println("\nEnrolled students of course " + cid + " in semester " + sem + ":\n");
-                    for(String str: sList){
-                        String[] token = str.split(" - ");
-                        if(token[3].equals(sem)){
-                            System.out.println(str);
-                        }
+                    for(String strg: filteredList){
+                        System.out.println(strg);
                     }
                     System.out.println("\nDo you wish to save this record to .csv file?");
                     System.out.println("1. Yes\n2. No");
@@ -161,7 +178,7 @@ public class Main {
                     if (choice.equals("1")){
                         String[] header = {"id","name","birthday","semester"};
                         String fileName = cid + "-" + sem + ".csv";
-                        export(sList, fileName,header);
+                        export(filteredList, fileName,header);
                     }
                 }
             }
